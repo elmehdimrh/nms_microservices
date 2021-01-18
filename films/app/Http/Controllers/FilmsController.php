@@ -117,6 +117,6 @@ class FilmsController extends Controller
     public function moviesByActor($id){
         $query = '%"id";i:'.$id.'%';
 
-        return Film::where('acteurs','LIKE',$query)->select('nom','annee')->get();
+        return Film::where('acteurs','LIKE',$query)->select('id','nom','annee')->get();
     }
 }
