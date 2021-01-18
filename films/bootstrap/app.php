@@ -60,7 +60,6 @@ $app->singleton(
 */
 
 $app->configure('app');
-$app->configure('films');
 
 /*
 |--------------------------------------------------------------------------
@@ -77,9 +76,10 @@ $app->configure('films');
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
+ $app->routeMiddleware([
 //     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+     'token' => App\Http\Middleware\TokenMiddleware::class,
+ ]);
 
 /*
 |--------------------------------------------------------------------------

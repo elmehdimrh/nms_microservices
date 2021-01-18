@@ -17,19 +17,23 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('/token','AccessController@generateToken');
+$router->post('/token','AccessController@retrieveToken');
 
-$router->get('/acteurs','ActeursController@index');
-$router->get('/acteur/details/{id}','ActeursController@show');
-$router->post('/acteur/ajouter','ActeursController@store');
-$router->put('/acteur/modifier/{id}','ActeursController@update');
-$router->delete('/acteur/supprimer/{id}','ActeursController@delete');
+$router->group(['middleware' => 'token'], function () use ($router) {
+
+    $router->get('/acteurs','ActeursController@index');
+    $router->get('/acteur/details/{id}','ActeursController@show');
+    $router->post('/acteur/ajouter','ActeursController@store');
+    $router->put('/acteur/modifier/{id}','ActeursController@update');
+    $router->delete('/acteur/supprimer/{id}','ActeursController@delete');
 
 
-$router->get('/films','FilmsController@index');
-$router->post('/film/ajouter','FilmsController@store');
-$router->get('/film/details/{id}','FilmsController@show');
-$router->put('/film/modifier/{id}','FilmsController@update');
-$router->delete('/film/supprimer/{id}','FilmsController@delete');
-$router->get('/films/{annee}','FilmsController@filmsByYear');
-$router->get('/acteur/{id}/films','FilmsController@actorFilms');
+    $router->get('/films','FilmsController@index');
+    $router->post('/film/ajouter','FilmsController@store');
+    $router->get('/film/details/{id}','FilmsController@show');
+    $router->put('/film/modifier/{id}','FilmsController@update');
+    $router->delete('/film/supprimer/{id}','FilmsController@delete');
+    $router->get('/films/{annee}','FilmsController@filmsByYear');
+    $router->get('/acteur/{id}/films','FilmsController@actorFilms');
+});
+

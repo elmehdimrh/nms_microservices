@@ -9,20 +9,24 @@ class ActeursService
 {
     private $base_url = null;
     private $nom = 'acteurs';
+    private $token = null;
 
     public function __construct()
     {
-        $this->base_url = Microservice::where('nom', $this->nom)->value('base_url');
+        $ms = Microservice::where('nom', $this->nom)->first();
+
+        $this->base_url = $ms->base_url;
+        $this->token = $ms->token;
     }
 
     public function acteursList()
     {
-        return Http::get($this->base_url . '/actors/all')->json();
+        return Http::withToken($this->token)->get($this->base_url . '/actors/all')->json();
     }
 
     public function acteurDetails($id)
     {
-        $response = Http::get($this->base_url . '/actor/read/' . $id);
+        $response = Http::withToken($this->token)->get($this->base_url . '/actor/read/' . $id);
 
         if ($response->failed()) {
             return response()->json($response->json(), $response->status());
@@ -34,7 +38,7 @@ class ActeursService
 
     public function createActeur($data)
     {
-        $response = Http::post($this->base_url . '/actor/create', $data);
+        $response = Http::withToken($this->token)->post($this->base_url . '/actor/create', $data);
 
         if ($response->failed()) {
             return response()->json($response->json(), $response->status());
@@ -44,7 +48,7 @@ class ActeursService
 
     public function updateActeur($id,$data)
     {
-        $response = Http::put($this->base_url . '/actor/update/' . $id, $data);
+        $response = Http::withToken($this->token)->put($this->base_url . '/actor/update/' . $id, $data);
 
         if ($response->failed()) {
             return response()->json($response->json(), $response->status());
@@ -54,7 +58,7 @@ class ActeursService
 
     public function supprimerActeur($id)
     {
-        $response = Http::delete($this->base_url . '/actor/delete/' . $id);
+        $response = Http::withToken($this->token)->delete($this->base_url . '/actor/delete/' . $id);
 
         if ($response->failed()) {
             return response()->json($response->json(), $response->status());

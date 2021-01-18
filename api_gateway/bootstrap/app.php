@@ -72,13 +72,14 @@ $app->configure('app');
 |
 */
 
- $app->middleware([
-     App\Http\Middleware\TokenMiddleware::class
- ]);
+// $app->middleware([
+////     App\Http\Middleware\TokenMiddleware::class
+//// ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+ $app->routeMiddleware([
+     //'auth' => App\Http\Middleware\Authenticate::class,
+     'token' => App\Http\Middleware\TokenMiddleware::class,
+ ]);
 
 /*
 |--------------------------------------------------------------------------

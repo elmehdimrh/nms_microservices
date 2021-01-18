@@ -1,5 +1,4 @@
 <?php
-use Illuminate\Support\Facades\Http;
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 /*
@@ -16,15 +15,12 @@ use Illuminate\Support\Facades\Http;
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-
-$router->get('/acc', function () use ($router) {
-    return \Illuminate\Support\Str::random(32);
+$router->group(['middleware' => 'token'], function () use ($router) {
+    $router->get('/movies/all','FilmsController@index');
+    $router->get('/movies/{year}','FilmsController@moviesByYear');
+    $router->get('/movies/actor/{id}','FilmsController@moviesByActor');
+    $router->post('/movie/create','FilmsController@store');
+    $router->get('/movie/read/{id}','FilmsController@show');
+    $router->put('/movie/update/{id}','FilmsController@update');
+    $router->delete('/movie/delete/{id}','FilmsController@delete');
 });
-
-$router->get('/movies/all','FilmsController@index');
-$router->get('/movies/{year}','FilmsController@moviesByYear');
-$router->get('/movies/actor/{id}','FilmsController@moviesByActor');
-$router->post('/movie/create','FilmsController@store');
-$router->get('/movie/read/{id}','FilmsController@show');
-$router->put('/movie/update/{id}','FilmsController@update');
-$router->delete('/movie/delete/{id}','FilmsController@delete');

@@ -6,6 +6,7 @@ namespace Database\Factories;
 use App\Models\Film;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class FilmFactory extends Factory
 {
@@ -23,23 +24,24 @@ class FilmFactory extends Factory
      */
     public function definition()
     {
+        $actors_ms = DB::table('microservices')->where('nom','acteurs')->select('base_url','token')->first();
         return [
             'nom' => $this->faker->sentence(2),
             'annee' => $this->faker->year(),
-            'acteurs' => $this->filmActorsFromAPI()
+            'acteurs' => $this->filmActorsFromAPI($actors_ms)
         ];
     }
 
-    private function filmActorsFromAPI()
+    private function filmActorsFromAPI($actors_ms)
     {
         $random = range(1,20);
 
         shuffle($random);
         $ids =  array_rand($random,random_int(1,3));
-        $uri = config('films.ACTORS_API');
 
-        $actors = collect($ids)->map(function ($item) use ($uri,$random) {
-            $response = Http::get($uri . '/read/' . $random[$item]);
+        $actors = collect($ids)->map(function ($item) use ($random,$actors_ms) {
+
+            $response = Http::withToken($actors_ms->token)->get($actors_ms->base_url . '/actor/read/' . $random[$item]);
 
             if($response->successful()) {
                 $content = $response->json();

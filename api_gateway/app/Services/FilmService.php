@@ -11,20 +11,24 @@ class FilmService
 {
     private $base_url = null;
     private $nom = 'films';
+    private $token = null;
 
     public function __construct()
     {
-        $this->base_url = Microservice::where('nom', $this->nom)->value('base_url');
+        $ms = Microservice::where('nom', $this->nom)->first();
+
+        $this->base_url = $ms->base_url;
+        $this->token = $ms->token;
     }
 
     public function filmsList()
     {
-        return Http::get($this->base_url . '/movies/all')->json();
+        return Http::withToken($this->token)->get($this->base_url . '/movies/all')->json();
     }
 
     public function filmDetails($id)
     {
-        $response = Http::get($this->base_url . '/movie/read/' . $id);
+        $response = Http::withToken($this->token)->get($this->base_url . '/movie/read/' . $id);
 
         if ($response->failed()) {
             return response()->json($response->json(), $response->status());
@@ -36,7 +40,7 @@ class FilmService
 
     public function createFilm($data)
     {
-        $response = Http::post($this->base_url . '/movie/create', $data);
+        $response = Http::withToken($this->token)->post($this->base_url . '/movie/create', $data);
 
         if ($response->failed()) {
             return response()->json($response->json(), $response->status());
@@ -46,7 +50,7 @@ class FilmService
 
     public function updateFilm($id, $data)
     {
-        $response = Http::put($this->base_url . '/movie/update/' . $id, $data);
+        $response = Http::withToken($this->token)->put($this->base_url . '/movie/update/' . $id, $data);
 
         if ($response->failed()) {
             return response()->json($response->json(), $response->status());
@@ -56,7 +60,7 @@ class FilmService
 
     public function supprimerFilm($id)
     {
-        $response = Http::delete($this->base_url . '/movie/delete/' . $id);
+        $response = Http::withToken($this->token)->delete($this->base_url . '/movie/delete/' . $id);
 
         if ($response->failed()) {
             return response()->json($response->json(), $response->status());
@@ -66,7 +70,7 @@ class FilmService
 
     public function filmsByYear($year)
     {
-        $response = Http::get($this->base_url . '/movies/' . $year);
+        $response = Http::withToken($this->token)->get($this->base_url . '/movies/' . $year);
 
         if ($response->failed()) {
             return response()->json($response->json(), $response->status());
@@ -78,7 +82,7 @@ class FilmService
 
     public function filmsByActor($id)
     {
-        $response = Http::get($this->base_url . '/movies/actor/' . $id);
+        $response = Http::withToken($this->token)->get($this->base_url . '/movies/actor/' . $id);
 
         if ($response->failed()) {
             return response()->json($response->json(), $response->status());
